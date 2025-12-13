@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Создать блог{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/create_blog.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Новый блог</h1>
+    {% if form_error %}
+    <div class="alert">{{ form_error }}</div>
+    {% endif %}
+    <form action="/blogs/create/" method="post">
+        <label>Заголовок</label>
+        <input type="text" name="title" required minlength="3">
+        <label>Краткое описание</label>
+        <input type="text" name="short_description" required minlength="3">
+        <label>Содержимое (Markdown)</label>
+        <textarea name="content" required></textarea>
+        <label>Теги (через запятую)</label>
+        <input type="text" name="tags" placeholder="python, fastapi, sql">
+        <button type="submit" class="button">Создать</button>
+    </form>
+</div>
+{% endblock %}
+

@@ -1,0 +1,27 @@
+    :root {
+        --blog-container-bg: #fff;
+        --blog-shadow: rgba(15,23,42,.08);
+        --blog-input-border: #d1d5db;
+        --back-link-bg: #e5e7eb;
+        --back-link-color: #111827;
+    }
+    
+    [data-theme="dark"] {
+        --blog-container-bg: #2d2d2d;
+        --blog-shadow: rgba(0,0,0,0.3);
+        --blog-input-border: #404040;
+        --back-link-bg: #374151;
+        --back-link-color: #e5e7eb;
+    }
+    
+    .container{max-width:720px;margin:20px auto 0;padding:24px;border-radius:12px;background:var(--blog-container-bg);box-shadow:0 10px 30px var(--blog-shadow);transition:background-color 0.3s ease,box-shadow 0.3s ease}
+    h1{margin:0 0 16px;font-size:26px;color:var(--text-color);transition:color 0.3s ease}
+    form{display:flex;flex-direction:column;gap:12px}
+    label{font-weight:600;color:var(--text-color);transition:color 0.3s ease}
+    input, textarea{padding:10px 12px;border:1px solid var(--blog-input-border);border-radius:8px;font-family:inherit;background:var(--blog-container-bg);color:var(--text-color);transition:border-color 0.3s ease,background-color 0.3s ease,color 0.3s ease}
+    textarea{min-height:200px;resize:vertical}
+    .alert{padding:12px;border-radius:8px;font-size:14px;background:#fef2f2;color:#991b1b;border:1px solid #fecdd3}
+    .buttons{margin-top:8px;display:flex;gap:8px}
+    .buttons a{padding:10px 18px;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px;transition:background-color 0.3s ease,color 0.3s ease}
+    .buttons .back-link{background:var(--back-link-bg);color:var(--back-link-color)}
+

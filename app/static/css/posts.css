@@ -1,0 +1,375 @@
+:root {
+    --primary-color: #1a1a1a;
+    --secondary-color: #666;
+    --accent-color: #2196F3;
+    --background-color: #fafafa;
+    --tag-bg: #f0f0f0;
+    --tag-hover-bg: #1976D2;
+    --tag-hover-text: #fff;
+    --max-width: 1200px;
+    --content-bg: white;
+    --border-color: #f0f0f0;
+    --excerpt-color: #444;
+    --shadow: rgba(0, 0, 0, 0.05);
+    --card-bg: #ffffff;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --card-border: #e5e7eb;
+    --card-divider: #e5e7eb;
+    --search-input-border: #d1d5db;
+}
+
+[data-theme="dark"] {
+    --primary-color: #e5e7eb;
+    --secondary-color: #9ca3af;
+    --accent-color: #60a5fa;
+    --background-color: #1a1a1a;
+    --tag-bg: #374151;
+    --tag-hover-bg: #3b82f6;
+    --tag-hover-text: #fff;
+    --content-bg: #2d2d2d;
+    --border-color: #404040;
+    --excerpt-color: #d1d5db;
+    --shadow: rgba(0, 0, 0, 0.3);
+    --card-bg: #1f1f1f;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --card-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.6);
+    --card-border: #333333;
+    --card-divider: #404040;
+    --search-input-border: #404040;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--primary-color);
+    margin: 0;
+    padding: 20px;
+    background: var(--background-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.content-container {
+    max-width: var(--max-width);
+    margin: 20px auto 0;
+    padding: 40px;
+    background: var(--content-bg);
+    box-shadow: 0 2px 20px var(--shadow);
+    border-radius: 12px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    color: var(--primary-color);
+}
+
+.content-container p {
+    color: var(--excerpt-color);
+    transition: color 0.3s ease;
+}
+
+.page-header {
+    margin-bottom: 1rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.page-header a.button-black {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 9999px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.page-header a.button-black:hover {
+    background: #111827;
+}
+
+.page-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.articles-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+}
+
+.article-card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+    border: 1px solid var(--card-border);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 200px;
+}
+
+.article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+}
+
+.article-card-header {
+    flex: 1;
+}
+
+.article-card h2 {
+    font-size: 1.5rem;
+    margin: 0 0 12px 0;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+    line-height: 1.3;
+}
+
+.article-card h2 a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.article-card h2 a:hover {
+    color: var(--accent-color);
+}
+
+.article-meta {
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    transition: color 0.3s ease;
+}
+
+.article-meta a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.article-meta a:hover {
+    color: var(--tag-hover-bg);
+}
+
+.article-excerpt {
+    color: var(--excerpt-color);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+    transition: color 0.3s ease;
+    flex: 1;
+}
+
+.article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 1rem;
+}
+
+.tag {
+    background: var(--tag-bg);
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: all 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.tag:hover {
+    background: var(--tag-hover-bg);
+    color: var(--tag-hover-text);
+}
+
+.article-card-footer {
+    border-top: 1px solid var(--card-divider);
+    padding-top: 16px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    color: var(--secondary-color);
+}
+
+.like-button:hover {
+    background: var(--tag-bg);
+    transform: scale(1.05);
+}
+
+.like-button.liked {
+    color: #e91e63;
+}
+
+.like-button.liked .like-icon {
+    fill: #e91e63;
+    stroke: #e91e63;
+}
+
+.like-icon {
+    width: 20px;
+    height: 20px;
+    transition: all 0.2s ease;
+    fill: none;
+    stroke: var(--secondary-color);
+    stroke-width: 2;
+}
+
+.like-button:active .like-icon {
+    transform: scale(1.3);
+}
+
+.like-button.liked:active .like-icon {
+    transform: scale(1.2);
+    animation: heartBeat 0.3s ease;
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.read-button {
+    padding: 10px 20px;
+    background: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-block;
+}
+
+.read-button:hover {
+    background: var(--tag-hover-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 3rem;
+}
+
+.pagination-link {
+    padding: 8px 16px;
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.pagination-link:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.pagination-link.active {
+    background: var(--accent-color);
+    color: white;
+}
+
+.pagination-link.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .content-container {
+        padding: 20px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .article-card h2 {
+        font-size: 1.3rem;
+    }
+    
+    .articles-list {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+.page-header a {
+        height: auto;
+        color: var(--primary-color);
+        text-decoration: none;
+        border: none;
+        outline: none;
+        display: inline-block;
+        line-height: 32px;
+        font-size: 36px;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+.page-header a:hover {
+    color: var(--accent-color);
+}
+
+.search-form{display:flex;gap:8px;margin:16px 0;flex:1}
+.search-form input{flex:1;padding:10px 12px;border:1px solid var(--search-input-border);border-radius:8px;background:var(--content-bg);color:var(--primary-color);transition:border-color 0.3s ease,background-color 0.3s ease,color 0.3s ease}
+.search-form button{padding:10px 14px;border:none;background:#2563eb;color:#fff;border-radius:8px;cursor:pointer}
+
+.search-info-message {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    border: 2px solid;
+    transition: all 0.3s ease;
+}
+
+.search-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+[data-theme="dark"] .search-success {
+    background: #064e3b;
+    color: #a7f3d0;
+    border-color: #059669;
+}
+
+.search-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+[data-theme="dark"] .search-error {
+    background: #7f1d1d;
+    color: #fecaca;
+    border-color: #dc2626;
+}

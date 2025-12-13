@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Понравившиеся блоги{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/liked_posts.css">
+{% endblock %}
+{% block content %}
+<div class="content-container">
+    <div class="liked-page-header">
+        <h1>Понравившиеся блоги</h1>
+        <p style="color: var(--secondary-color);">Все посты, которые вы лайкнули</p>
+    </div>
+
+    <!-- Список статей -->
+    {% if article.blogs %}
+        <ul class="articles-list">
+            {% for blog in article.blogs %}
+            <li class="article-card" data-post-id="{{ blog.id }}">
+                <div class="article-card-header">
+                    <h2><a href="/blogs/{{ blog.id }}">{{ blog.title }}</a></h2>
+                    <div class="article-meta">
+                        {% if blog.author_id %}
+                        <a href="/blogs?author_id={{ blog.author_id }}">{{ blog.author_name }}</a>
+                        {% else %}
+                        {{ blog.author_name }}
+                        {% endif %}
+                        • {{ blog.created_at.strftime('%d %B %Y') }}
+                    </div>
+                    <p class="article-excerpt">{{ blog.short_description }}</p>
+                    {% if blog.tags %}
+                    <div class="article-tags">
+                        {% for tag in blog.tags %}
+                        <a href="/blogs?tag={{ tag.name }}" class="tag">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="article-card-footer">
+                    <button class="like-button liked" data-post-id="{{ blog.id }}" aria-label="Лайк">
+                        <svg class="like-icon" viewBox="0 0 24 24" fill="#e91e63" stroke="#e91e63" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="like-text">Лайкнуто</span>
+                    </button>
+                    <a href="/blogs/{{ blog.id }}/" class="read-button">Прочитать</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <div class="no-liked-message">
+            У вас пока нет лайкнутых постов. Лайкайте посты, чтобы они появились здесь!
+        </div>
+    {% endif %}
+
+    <!-- Пагинация -->
+    {% if article.total_page > 0 %}
+    <div class="pagination">
+        {% if article.page > 1 %}
+        <a href="/blogs/liked/?page={{ article.page - 1 }}" class="pagination-link">←</a>
+        {% endif %}
+        {% for p in range(1, article.total_page + 1) %}
+        <a href="/blogs/liked/?page={{ p }}" class="pagination-link {% if p == article.page %}active{% endif %}">{{ p }}</a>
+        {% endfor %}
+        {% if article.page < article.total_page %}
+        <a href="/blogs/liked/?page={{ article.page + 1 }}" class="pagination-link">→</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/likes.js"></script>
+<script src="/static/js/liked-posts.js"></script>
+{% endblock %}

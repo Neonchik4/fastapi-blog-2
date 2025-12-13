@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Редактировать блог{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/edit_blog.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Редактировать блог</h1>
+    {% if form_error %}
+    <div class="alert">{{ form_error }}</div>
+    {% endif %}
+    <form action="/blogs/{{ blog.id }}/edit/" method="post">
+        <label>Заголовок</label>
+        <input type="text" name="title" required minlength="3" value="{{ blog.title }}">
+        <label>Краткое описание</label>
+        <input type="text" name="short_description" required minlength="3" value="{{ blog.short_description }}">
+        <label>Содержимое (Markdown)
+        </label>
+        <textarea name="content" required>{{ blog.content }}</textarea>
+        <label>Теги (через запятую)</label>
+        <input type="text" name="tags" placeholder="python, fastapi, sql" value="{{ tags_str }}">
+        <div class="buttons">
+            <button type="submit" class="button">Сохранить изменения</button>
+            <a href="/blogs/{{ blog.id }}/" class="back-link">Отменить</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

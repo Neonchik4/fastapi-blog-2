@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Блоги{% endblock %}
+{% block scripts %}
+<script src="/static/js/likes.js"></script>
+{% endblock %}
+{% block content %}
+<div class="content-container">
+    <div class="page-header">
+        <a href="/blogs/">Все блоги</a>
+    </div>
+
+    <form action="/blogs/" method="get" class="search-form">
+        <input type="text" name="search" placeholder="Поиск по блогам"
+               value="{{ filters.search or '' }}">
+        {% if filters.tag %}<input type="hidden" name="tag" value="{{ filters.tag }}">{% endif %}
+        {% if filters.author_id %}<input type="hidden" name="author_id" value="{{ filters.author_id }}">{% endif %}
+        <button type="submit">Найти</button>
+    </form>
+    
+    {% if search_message %}
+    <div class="search-info-message {% if search_type.endswith('_not_found') %}search-error{% else %}search-success{% endif %}">
+        {{ search_message }}
+    </div>
+    {% endif %}
+
+    <!-- Список статей -->
+    {% if article.blogs %}
+        <ul class="articles-list">
+            {% for blog in article.blogs %}
+            <li class="article-card" data-post-id="{{ blog.id }}">
+                <div class="article-card-header">
+                    <h2><a href="/blogs/{{ blog.id }}">{{ blog.title }}</a></h2>
+                    <div class="article-meta">
+                        {% if blog.author_id %}
+                        <a href="?author_id={{ blog.author_id }}">{{ blog.author_name }}</a>
+                        {% else %}
+                        {{ blog.author_name }}
+                        {% endif %}
+                        • {{ blog.created_at.strftime('%d %B %Y') }}
+                    </div>
+                    <p class="article-excerpt">{{ blog.short_description }}</p>
+                    {% if blog.tags %}
+                    <div class="article-tags">
+                        {% for tag in blog.tags %}
+                        <a href="/blogs?tag={{ tag.name }}" class="tag">{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="article-card-footer">
+                    <button class="like-button" data-post-id="{{ blog.id }}" aria-label="Лайк">
+                        <svg class="like-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span class="like-text">Лайк</span>
+                    </button>
+                    <a href="/blogs/{{ blog.id }}/" class="read-button">Прочитать</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>По вашему запросу ничего не найдено.</p>
+    {% endif %}
+
+    <!-- Пагинация -->
+    <div class="pagination">
+        {% if article.page > 1 %}
+        <a href="?page={{ article.page - 1 }}{% if filters.author_id %}&author_id={{ filters.author_id }}{% endif %}{% if filters.tag %}&tag={{ filters.tag }}{% endif %}{% if filters.search %}&search={{ filters.search }}{% endif %}"
+           class="pagination-link">←</a>
+        {% endif %}
+        {% for p in range(1, article.total_page + 1) %}
+        <a href="?page={{ p }}{% if filters.author_id %}&author_id={{ filters.author_id }}{% endif %}{% if filters.tag %}&tag={{ filters.tag }}{% endif %}{% if filters.search %}&search={{ filters.search }}{% endif %}"
+           class="pagination-link {% if p == article.page %}active{% endif %}">{{ p }}</a>
+        {% endfor %}
+        {% if article.page < article.total_page %}
+        <a href="?page={{ article.page + 1 }}{% if filters.author_id %}&author_id={{ filters.author_id }}{% endif %}{% if filters.tag %}&tag={{ filters.tag }}{% endif %}{% if filters.search %}&search={{ filters.search }}{% endif %}"
+           class="pagination-link">→</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

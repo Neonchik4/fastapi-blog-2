@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/profile.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Профиль</h1>
+    
+    {% if form_error %}
+    <div class="alert error">{{ form_error }}</div>
+    {% endif %}
+    {% if form_success %}
+    <div class="alert success">{{ form_success }}</div>
+    {% endif %}
+
+    <div class="info-section">
+        <h2>Информация о профиле</h2>
+        <div class="info-row">
+            <span class="info-label">Имя:</span>
+            <span class="info-value">{{ current_user.first_name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Фамилия:</span>
+            <span class="info-value">{{ current_user.last_name }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Email:</span>
+            <span class="info-value">{{ current_user.email }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Телефон:</span>
+            <span class="info-value">{{ current_user.phone_number }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Роль:</span>
+            <span class="info-value">{{ current_user.role.name }}</span>
+        </div>
+    </div>
+
+    <div class="info-section">
+        <h2>Изменить профиль</h2>
+        <form action="/profile/" method="post">
+            <label>Имя</label>
+            <input type="text" name="first_name" value="{{ current_user.first_name }}" minlength="3" maxlength="50">
+            
+            <label>Фамилия</label>
+            <input type="text" name="last_name" value="{{ current_user.last_name }}" minlength="3" maxlength="50">
+            
+            <label>Email</label>
+            <input type="email" name="email" value="{{ current_user.email }}">
+            
+            <label>Телефон</label>
+            <input type="text" name="phone_number" value="{{ current_user.phone_number }}" placeholder="+79991234567">
+            
+            <label>Новый пароль (оставьте пустым, если не хотите менять)</label>
+            <input type="password" name="password" minlength="5" maxlength="50">
+            
+            <label>Повторите новый пароль</label>
+            <input type="password" name="confirm_password" minlength="5" maxlength="50">
+            
+            <label>Роль</label>
+            <select name="role_id">
+                {% for role in roles %}
+                <option value="{{ role.id }}" {% if role.id == current_user.role_id %}selected{% endif %}>{{ role.name }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Сохранить изменения</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Авторизация{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/auth.css">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="tabs">
+        <a class="tab {% if mode == 'login' %}active{% endif %}" href="/auth/?mode=login">Вход</a>
+        <a class="tab {% if mode == 'register' %}active{% endif %}" href="/auth/?mode=register">Регистрация</a>
+    </div>
+
+    <div id="alert-container">
+        {% if form_error %}
+        <div class="alert error">{{ form_error }}</div>
+        {% endif %}
+        {% if form_success %}
+        <div class="alert success">{{ form_success }}</div>
+        {% endif %}
+    </div>
+
+    {% if mode == 'register' %}
+    <h1>Создать аккаунт</h1>
+    <form id="registerForm" action="/auth/register/form" method="post">
+        <label>Имя</label>
+        <input type="text" name="first_name" required minlength="3" maxlength="50">
+        <label>Фамилия</label>
+        <input type="text" name="last_name" required minlength="3" maxlength="50">
+        <label>Email</label>
+        <input type="email" name="email" required>
+        <label>Телефон</label>
+        <input type="text" name="phone_number" placeholder="+79991234567" required>
+        <label>Пароль</label>
+        <input type="password" name="password" required minlength="5">
+        <label>Повторите пароль</label>
+        <input type="password" name="confirm_password" required minlength="5">
+        <label>Роль</label>
+        <select name="role_id" required>
+            {% for role in roles %}
+            <option value="{{ role.id }}" {% if role.id == 1 %}selected{% endif %}>{{ role.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="button primary">Зарегистрироваться</button>
+    </form>
+    {% else %}
+    <h1>Войти</h1>
+    <form id="loginForm" action="/auth/login/form" method="post">
+        <label>Email</label>
+        <input type="email" name="email" required>
+        <label>Пароль</label>
+        <input type="password" name="password" required minlength="5">
+        <button type="submit" class="button primary">Войти</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const alertContainer = document.getElementById('alert-container');
+function showAlert(message, type='error') {
+    if (!alertContainer) return;
+    alertContainer.innerHTML = `<div class="alert ${type}">${message}</div>`;
+}
+
+async function handleSubmit(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const action = form.getAttribute('action');
+        try {
+            const resp = await fetch(action, {
+                method: 'POST',
+                body: formData,
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+            });
+            const data = await resp.json().catch(() => ({}));
+            if (!resp.ok || !data.ok) {
+                showAlert(data.error || 'Ошибка. Проверьте данные.', 'error');
+                return;
+            }
+            if (formId === 'registerForm') {
+                showAlert('Регистрация успешна. Теперь войдите.', 'success');
+                setTimeout(() => window.location.href = '/auth/?mode=login', 700);
+            } else {
+                window.location.href = '/';
+            }
+        } catch (err) {
+            showAlert('Сервис недоступен. Попробуйте позже.', 'error');
+        }
+    });
+}
+
+handleSubmit('registerForm');
+handleSubmit('loginForm');
+</script>
+{% endblock %}
+

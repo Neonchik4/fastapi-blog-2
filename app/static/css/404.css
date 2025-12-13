@@ -1,0 +1,73 @@
+:root {
+    --404-bg: #f9f9f9;
+    --404-container-bg: white;
+    --404-title-color: #333;
+    --404-text-color: #555;
+    --404-button-bg: #3498db;
+    --404-button-hover: #2979b7;
+    --404-shadow: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+    --404-bg: #1a1a1a;
+    --404-container-bg: #2d2d2d;
+    --404-title-color: #e5e7eb;
+    --404-text-color: #d1d5db;
+    --404-button-bg: #60a5fa;
+    --404-button-hover: #3b82f6;
+    --404-shadow: rgba(0, 0, 0, 0.3);
+}
+
+main {
+    min-height: calc(100vh - 72px); /* высота экрана минус примерная высота шапки */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 16px 40px;
+}
+
+.message-container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background: var(--404-container-bg);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px var(--404-shadow);
+    max-width: 500px;
+    text-align: center;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.message-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--404-title-color);
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+
+.message-text {
+    font-size: 18px;
+    color: var(--404-text-color);
+    margin-bottom: 30px;
+    transition: color 0.3s ease;
+}
+
+.message-container .button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--404-button-bg);
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.message-container .button:hover {
+    background-color: var(--404-button-hover);
+}
+

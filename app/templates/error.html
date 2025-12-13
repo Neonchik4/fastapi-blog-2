@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/error.css">
+{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="error-card">
+        <div class="error-code">{{ status_code }}</div>
+        <h1 class="error-title">{{ page_title }}</h1>
+        <p class="error-subtitle">{{ page_subtitle }}</p>
+        <p class="error-path">Путь: <code>{{ path }}</code></p>
+        <div class="error-actions">
+            <a href="/" class="button primary error-btn">На главную</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

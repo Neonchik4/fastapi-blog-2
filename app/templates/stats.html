@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Статистика{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/stats.css">
+{% endblock %}
+
+{% block content %}
+<div class="stats-page">
+    <div class="stats-header">
+        <h1>Статистика</h1>
+        <p class="stats-subtitle">Сводка по пользователям, блогам, тегам и лайкам и т.д.</p>
+    </div>
+
+    <section class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-label">Пользователи</div>
+            <div class="kpi-value">{{ stats.users_total }}</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Блоги</div>
+            <div class="kpi-value">{{ stats.blogs_total }}</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Теги</div>
+            <div class="kpi-value">{{ stats.tags_total }}</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Лайки</div>
+            <div class="kpi-value">{{ stats.likes_total }}</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Уникальных лайкнувших</div>
+            <div class="kpi-value">{{ stats.unique_likers }}</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Тегов на пост (avg)</div>
+            <div class="kpi-value">{{ "%.2f"|format(stats.avg_tags_per_blog) }}</div>
+        </div>
+    </section>
+
+    <section class="stats-grid">
+        <div class="panel">
+            <h2>Посты по статусам</h2>
+            <table class="table">
+                <thead>
+                    <tr><th>Статус</th><th class="right">Кол-во</th></tr>
+                </thead>
+                <tbody>
+                {% for row in stats.blogs_by_status %}
+                    <tr><td>{{ row.status }}</td><td class="right">{{ row.count }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h2>Пользователи по ролям</h2>
+            <table class="table">
+                <thead>
+                    <tr><th>Роль</th><th class="right">Кол-во</th></tr>
+                </thead>
+                <tbody>
+                {% for row in stats.roles_breakdown %}
+                    <tr><td>{{ row.role }}</td><td class="right">{{ row.count }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h2>Топ авторов</h2>
+            <table class="table">
+                <thead>
+                    <tr><th>Автор</th><th class="right">Постов</th></tr>
+                </thead>
+                <tbody>
+                {% for row in stats.top_authors %}
+                    <tr><td>{{ row.author_name }}</td><td class="right">{{ row.posts_cnt }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h2>Топ тегов</h2>
+            <table class="table">
+                <thead>
+                    <tr><th>Тег</th><th class="right">Использований</th></tr>
+                </thead>
+                <tbody>
+                {% for row in stats.top_tags %}
+                    <tr><td>{{ row.tag }}</td><td class="right">{{ row.uses }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel panel-wide">
+            <h2>Топ постов по лайкам</h2>
+            <table class="table">
+                <thead>
+                    <tr><th>Пост</th><th class="right">Лайков</th></tr>
+                </thead>
+                <tbody>
+                {% if stats.top_posts_by_likes %}
+                {% for row in stats.top_posts_by_likes %}
+                    <tr>
+                        <td><a href="/blogs/{{ row.post_id }}/">{{ row.title }}</a></td>
+                        <td class="right">{{ row.likes }}</td>
+                    </tr>
+                {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="2">Нет данных (в likes.json нет лайков по существующим постам).</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+

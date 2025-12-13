@@ -1,0 +1,134 @@
+.stats-page {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    padding: 24px;
+}
+
+.stats-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.stats-header h1 {
+    margin: 0;
+    font-size: 30px;
+    color: var(--text-color);
+}
+
+.stats-subtitle {
+    margin: 0;
+    color: var(--text-color);
+    opacity: 0.75;
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+    margin: 16px 0 18px;
+}
+
+.kpi-card {
+    background: var(--topbar-bg);
+    border: 1px solid var(--topbar-border);
+    border-radius: 12px;
+    padding: 14px 14px 12px;
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.kpi-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.7;
+    color: var(--text-color);
+}
+
+.kpi-value {
+    font-size: 26px;
+    font-weight: 800;
+    margin-top: 6px;
+    color: var(--text-color);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 10px;
+}
+
+.panel {
+    background: var(--topbar-bg);
+    border: 1px solid var(--topbar-border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 10px var(--shadow);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.panel-wide {
+    grid-column: span 2;
+}
+
+.panel h2 {
+    margin: 0 0 12px 0;
+    font-size: 18px;
+    color: var(--text-color);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.table th,
+.table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--topbar-border);
+    color: var(--text-color);
+}
+
+.table th {
+    text-align: left;
+    font-weight: 700;
+    opacity: 0.9;
+}
+
+.table td a {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.table td a:hover {
+    text-decoration: underline;
+}
+
+.right {
+    text-align: right;
+    white-space: nowrap;
+}
+
+@media (max-width: 1100px) {
+    .kpi-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .panel-wide {
+        grid-column: span 1;
+    }
+    .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+

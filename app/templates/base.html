@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if current_user %}
+    <meta name="user-id" content="{{ current_user.id }}">
+    {% else %}
+    <meta name="user-id" content="">
+    {% endif %}
+    <title>{% block title %}FastAPI Blog{% endblock %}</title>
+    <script>
+        // Применяем тему ДО загрузки стилей, чтобы избежать мигания
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    <link rel="stylesheet" href="/static/css/posts.css">
+    <link rel="stylesheet" href="/static/css/base.css">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+{% block header %}
+<header class="topbar">
+    <div class="topbar-content">
+        <div class="logo-section">
+            <a href="/" class="logo">FastAPI Blog</a>
+            <a href="/" class="button home-button">Главная</a>
+            {% if current_user %}
+            <a href="/blogs/liked/" class="button liked-button">Понравившиеся</a>
+            <a href="/stats/" class="button stats-button">Статистика</a>
+            {% endif %}
+        </div>
+        <div class="auth-controls">
+            <button id="theme-toggle" class="theme-toggle" aria-label="Переключить тему">
+                <span id="theme-icon">🌙</span>
+            </button>
+            {% if current_user %}
+                <div class="profile-dropdown" id="profile-dropdown">
+                    <a href="/profile/" class="button profile-button" id="profile-button">{{ current_user.first_name }} ▼</a>
+                    <div class="profile-dropdown-content" id="profile-dropdown-content">
+                        <a href="/profile/" class="profile-link">Профиль</a>
+                        <a href="/blogs/drafts/" class="drafts-link">Черновики</a>
+                        {% if current_user.role.name == 'Admin' or current_user.role.name == 'SuperAdmin' %}
+                        <a href="/blogs/all-drafts/" class="all-drafts-link">Все черновики</a>
+                        {% endif %}
+                    </div>
+                </div>
+                <a href="/blogs/create/" class="button success">Создать блог</a>
+                <form action="/auth/logout/" method="post" class="inline-form">
+                    <button type="submit" class="button danger">Выйти</button>
+                </form>
+            {% else %}
+                <a href="/auth/?mode=login" class="button primary">Войти</a>
+                <a href="/auth/?mode=register" class="button secondary">Зарегистрироваться</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+{% endblock %}
+<main>
+    {% block content %}{% endblock %}
+</main>
+{% block scripts %}{% endblock %}
+<script src="/static/js/theme.js"></script>
+<script>
+// Управление выпадающим списком профиля
+(function() {
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const profileButton = document.getElementById('profile-button');
+    const dropdownContent = document.getElementById('profile-dropdown-content');
+    let hideTimeout = null;
+    let autoHideTimeout = null;
+    
+    if (!profileDropdown || !profileButton || !dropdownContent) return;
+    
+    // Показываем при клике на кнопку
+    profileButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Переключаем видимость
+        const isVisible = dropdownContent.classList.contains('show');
+        
+        if (isVisible) {
+            hideDropdown();
+        } else {
+            showDropdown();
+        }
+    });
+    
+    // Показываем при наведении на dropdown
+    profileDropdown.addEventListener('mouseenter', function() {
+        clearTimeout(hideTimeout);
+        clearTimeout(autoHideTimeout);
+        showDropdown();
+    });
+    
+    // Скрываем с задержкой 1.5 секунды при уходе мышки
+    profileDropdown.addEventListener('mouseleave', function() {
+        hideTimeout = setTimeout(function() {
+            hideDropdown();
+        }, 1500);
+    });
+    
+    // Скрываем при клике вне dropdown
+    document.addEventListener('click', function(e) {
+        if (!profileDropdown.contains(e.target)) {
+            hideDropdown();
+        }
+    });
+    
+    function showDropdown() {
+        clearTimeout(hideTimeout);
+        clearTimeout(autoHideTimeout);
+        dropdownContent.classList.add('show');
+        
+        // Автоматически скрываем через 6 секунд
+        autoHideTimeout = setTimeout(function() {
+            hideDropdown();
+        }, 6000);
+    }
+    
+    function hideDropdown() {
+        clearTimeout(hideTimeout);
+        clearTimeout(autoHideTimeout);
+        dropdownContent.classList.remove('show');
+    }
+})();
+</script>
+</body>
+</html>

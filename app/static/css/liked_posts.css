@@ -1,0 +1,31 @@
+    :root {
+        --search-input-border: #d1d5db;
+    }
+    
+    [data-theme="dark"] {
+        --search-input-border: #404040;
+    }
+    
+    .liked-page-header {
+        text-align: center;
+        margin-bottom: 24px;
+    }
+    
+    .liked-page-header h1 {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 8px;
+    }
+    
+    .no-liked-message {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--secondary-color);
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+    }
+    
+    .content-container {
+        max-width: 1200px;
+    }
+

@@ -1,0 +1,42 @@
+[
+  {
+    "user_id": 6,
+    "post_id": 4,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 2,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 8,
+    "liked": true
+  },
+  {
+    "user_id": 13,
+    "post_id": 15,
+    "liked": true
+  },
+  {
+    "user_id": 13,
+    "post_id": 8,
+    "liked": true
+  },
+  {
+    "user_id": 14,
+    "post_id": 2,
+    "liked": true
+  },
+  {
+    "user_id": 14,
+    "post_id": 5,
+    "liked": true
+  },
+  {
+    "user_id": 14,
+    "post_id": 6,
+    "liked": true
+  }
+]

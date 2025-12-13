@@ -1,0 +1,57 @@
+.error-page {
+    max-width: 980px;
+    margin: 28px auto 0;
+    padding: 24px;
+}
+
+.error-card {
+    background: var(--topbar-bg);
+    border: 1px solid var(--topbar-border);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px var(--shadow);
+    padding: 28px;
+    text-align: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.error-code {
+    font-size: 56px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+    opacity: 0.9;
+}
+
+.error-title {
+    margin: 10px 0 6px 0;
+    font-size: 22px;
+    color: var(--text-color);
+}
+
+.error-subtitle {
+    margin: 0;
+    color: var(--text-color);
+    opacity: 0.75;
+}
+
+.error-path {
+    margin: 14px 0 0 0;
+    color: var(--text-color);
+    opacity: 0.75;
+}
+
+.error-actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Никаких глобальных стилей .button — только внутри страницы ошибки */
+.error-card .error-btn {
+    padding: 12px 18px;
+    border-radius: 10px;
+}
+
+

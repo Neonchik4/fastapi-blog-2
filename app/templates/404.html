@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Блог ID {{ blog_id }} не найден{% endblock %}
+{% block head_extra %}
+<link rel="stylesheet" href="/static/css/404.css">
+{% endblock %}
+{% block content %}
+<div class="message-container">
+    <h1 class="message-title">Блог не найден</h1>
+    <p class="message-text">
+        К сожалению, блог <strong>с ID {{ blog_id }} </strong>не найден. Возможно, его автор удалил запись
+        или переместил её в черновики.
+    </p>
+    <a href="/blogs/" class="button">Смотреть опубликованные блоги</a>
+</div>
+{% endblock %}

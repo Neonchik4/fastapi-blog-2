@@ -1,0 +1,138 @@
+    :root {
+        --profile-container-bg: #fff;
+        --profile-shadow: rgba(0, 0, 0, 0.08);
+        --profile-title-color: #1f2937;
+        --profile-label-color: #374151;
+        --profile-input-border: #d1d5db;
+        --profile-select-bg: #fff;
+        --profile-info-border: #e5e7eb;
+        --profile-info-row-border: #f3f4f6;
+        --profile-info-label-color: #6b7280;
+        --profile-info-value-color: #1f2937;
+        --profile-h2-color: #1f2937;
+    }
+    
+    [data-theme="dark"] {
+        --profile-container-bg: #2d2d2d;
+        --profile-shadow: rgba(0, 0, 0, 0.3);
+        --profile-title-color: #e5e7eb;
+        --profile-label-color: #d1d5db;
+        --profile-input-border: #404040;
+        --profile-select-bg: #374151;
+        --profile-info-border: #404040;
+        --profile-info-row-border: #374151;
+        --profile-info-label-color: #9ca3af;
+        --profile-info-value-color: #e5e7eb;
+        --profile-h2-color: #e5e7eb;
+    }
+    
+    .container {
+        max-width: 720px;
+        margin: 20px auto 0;
+        padding: 32px;
+        border-radius: 16px;
+        background: var(--profile-container-bg);
+        box-shadow: 0 4px 20px var(--profile-shadow);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    h1 {
+        margin: 0 0 24px;
+        font-size: 32px;
+        color: var(--profile-title-color);
+        transition: color 0.3s ease;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+    label {
+        font-weight: 600;
+        color: var(--profile-label-color);
+        font-size: 14px;
+        transition: color 0.3s ease;
+    }
+    input {
+        padding: 12px 14px;
+        border: 1px solid var(--profile-input-border);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        background: var(--profile-container-bg);
+        color: var(--profile-title-color);
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+    input:focus {
+        outline: none;
+        border-color: #3b82f6;
+    }
+    select {
+        padding: 12px 14px;
+        border: 1px solid var(--profile-input-border);
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 14px;
+        background: var(--profile-select-bg);
+        color: var(--profile-title-color);
+        cursor: pointer;
+        transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+    }
+    .alert {
+        padding: 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+    .alert.error {
+        background: #fef2f2;
+        color: #991b1b;
+        border: 1px solid #fecaca;
+    }
+    .alert.success {
+        background: #ecfdf5;
+        color: #065f46;
+        border: 1px solid #a7f3d0;
+    }
+    button[type="submit"] {
+        padding: 14px;
+        background: #3b82f6;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    button[type="submit"]:hover {
+        background: #2563eb;
+    }
+    .info-section {
+        margin-bottom: 24px;
+        padding-bottom: 24px;
+        border-bottom: 1px solid var(--profile-info-border);
+        transition: border-color 0.3s ease;
+    }
+    .info-section h2 {
+        font-size: 20px;
+        color: var(--profile-h2-color);
+        margin-bottom: 16px;
+        transition: color 0.3s ease;
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--profile-info-row-border);
+        transition: border-color 0.3s ease;
+    }
+    .info-label {
+        font-weight: 600;
+        color: var(--profile-info-label-color);
+        transition: color 0.3s ease;
+    }
+    .info-value {
+        color: var(--profile-info-value-color);
+        transition: color 0.3s ease;
+    }
+
