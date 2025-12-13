@@ -76,8 +76,8 @@ async def test_create_blog_submit_validation_error(client, monkeypatch):
     def mock_init(self, *args, **kwargs):
         try:
             original_init(self, title=None, content="", short_description="", tags=[])
-        except ValidationError as e:
-            raise e
+        except ValidationError:
+            raise
 
     monkeypatch.setattr(BlogCreateSchemaBase, "__init__", mock_init)
     monkeypatch.setattr(views, "BlogCreateSchemaBase", BlogCreateSchemaBase)
@@ -288,8 +288,8 @@ async def test_edit_blog_submit_validation_error_with_blog(client, monkeypatch):
     def mock_init(self, *args, **kwargs):
         try:
             original_init(self, title=None, content="", short_description="", tags=[])
-        except ValidationError as e:
-            raise e
+        except ValidationError:
+            raise
 
     monkeypatch.setattr(BlogCreateSchemaBase, "__init__", mock_init)
     monkeypatch.setattr(views, "BlogCreateSchemaBase", BlogCreateSchemaBase)
