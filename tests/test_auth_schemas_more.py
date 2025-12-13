@@ -78,9 +78,7 @@ def test_suser_update_password_hash_when_provided():
 
     upd = SUserUpdate(password="secret123", confirm_password="secret123")
     assert upd.password != "secret123"
-    assert upd.password.startswith("$2b$") or upd.password.startswith(
-        "$2a$"
-    )
+    assert upd.password.startswith("$2b$") or upd.password.startswith("$2a$")
 
 
 def test_suser_info_computed_fields():
@@ -137,6 +135,4 @@ def test_suser_register_password_hash():
         confirm_password="secret123",
     )
     assert user.password != "secret123"
-    assert user.password.startswith("$2b$") or user.password.startswith(
-        "$2a$"
-    )
+    assert user.password.startswith("$2b$") or user.password.startswith("$2a$")
