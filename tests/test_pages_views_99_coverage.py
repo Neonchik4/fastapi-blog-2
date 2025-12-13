@@ -3,10 +3,11 @@ import uuid
 from pathlib import Path
 
 import pytest
-from sqlalchemy.exc import IntegrityError
 
 
-async def _register_and_login(client, *, email: str, phone: str, password: str = "secret123"):
+async def _register_and_login(
+    client, *, email: str, phone: str, password: str = "secret123"
+):
     await client.post(
         "/auth/register/",
         json={
@@ -63,17 +64,21 @@ async def test_create_blog_page_renders(client):
 @pytest.mark.asyncio
 async def test_create_blog_submit_validation_error(client, monkeypatch):
     from pydantic import ValidationError
-    from app.pages import views
+
     from app.api.schemas import BlogCreateSchemaBase
+    from app.pages import views
+
     email = f"create_val_{uuid.uuid4().hex[:8]}@example.com"
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
     await _register_and_login(client, email=email, phone=phone)
     original_init = BlogCreateSchemaBase.__init__
+
     def mock_init(self, *args, **kwargs):
         try:
             original_init(self, title=None, content="", short_description="", tags=[])
-        except ValidationError as e:
-            raise e
+        except ValidationError:
+            raise
+
     monkeypatch.setattr(BlogCreateSchemaBase, "__init__", mock_init)
     monkeypatch.setattr(views, "BlogCreateSchemaBase", BlogCreateSchemaBase)
     r = await client.post(
@@ -222,13 +227,16 @@ async def test_edit_blog_page_user_role_none(app, client):
         follow_redirects=False,
     )
     blog_id = int(r.headers["location"].strip("/").split("/")[1])
-    from app.auth.dependencies import get_current_user
     from types import SimpleNamespace
+
+    from app.auth.dependencies import get_current_user
+
     async def _mock_get_current_user():
         user_obj = SimpleNamespace()
         user_obj.id = 1
         user_obj.role = None
         return user_obj
+
     app.dependency_overrides[get_current_user] = _mock_get_current_user
     try:
         r = await client.get(f"/blogs/{blog_id}/edit/")
@@ -257,8 +265,10 @@ async def test_edit_blog_submit_validation_error_blog_not_found(client):
 @pytest.mark.asyncio
 async def test_edit_blog_submit_validation_error_with_blog(client, monkeypatch):
     from pydantic import ValidationError
-    from app.pages import views
+
     from app.api.schemas import BlogCreateSchemaBase
+    from app.pages import views
+
     email = f"edit_val_{uuid.uuid4().hex[:8]}@example.com"
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
     await _register_and_login(client, email=email, phone=phone)
@@ -274,11 +284,13 @@ async def test_edit_blog_submit_validation_error_with_blog(client, monkeypatch):
     )
     blog_id = int(r.headers["location"].strip("/").split("/")[1])
     original_init = BlogCreateSchemaBase.__init__
+
     def mock_init(self, *args, **kwargs):
         try:
             original_init(self, title=None, content="", short_description="", tags=[])
-        except ValidationError as e:
-            raise e
+        except ValidationError:
+            raise
+
     monkeypatch.setattr(BlogCreateSchemaBase, "__init__", mock_init)
     monkeypatch.setattr(views, "BlogCreateSchemaBase", BlogCreateSchemaBase)
     r = await client.post(
@@ -324,12 +336,14 @@ async def test_edit_blog_submit_tags_clear(client):
 
 
 @pytest.mark.asyncio
-async def test_edit_blog_submit_integrity_error_blog_not_found_after_rollback(client, db_sessionmaker):
+async def test_edit_blog_submit_integrity_error_blog_not_found_after_rollback(
+    client, db_sessionmaker
+):
     email = f"edit_int404_{uuid.uuid4().hex[:8]}@example.com"
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
     await _register_and_login(client, email=email, phone=phone)
     title1 = f"Title1_{uuid.uuid4().hex[:6]}"
-    r1 = await client.post(
+    await client.post(
         "/blogs/create/",
         data={
             "title": title1,
@@ -339,7 +353,6 @@ async def test_edit_blog_submit_integrity_error_blog_not_found_after_rollback(cl
         },
         follow_redirects=False,
     )
-    blog_id1 = int(r1.headers["location"].strip("/").split("/")[1])
     title2 = f"Title2_{uuid.uuid4().hex[:6]}"
     r2 = await client.post(
         "/blogs/create/",
@@ -353,6 +366,7 @@ async def test_edit_blog_submit_integrity_error_blog_not_found_after_rollback(cl
     )
     blog_id2 = int(r2.headers["location"].strip("/").split("/")[1])
     from app.api.dao import BlogDAO
+
     async with db_sessionmaker() as session:
         blog = await BlogDAO.find_one_or_none_by_id(session=session, data_id=blog_id2)
         if blog:
@@ -374,7 +388,9 @@ async def test_edit_blog_submit_integrity_error_blog_not_found_after_rollback(cl
 async def test_blogs_page_author_found(client, ensure_user):
     email = f"author_found_{uuid.uuid4().hex[:8]}@example.com"
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
-    user = await ensure_user(email, password="secret123", phone=phone, first_name="Author", last_name="Found")
+    user = await ensure_user(
+        email, password="secret123", phone=phone, first_name="Author", last_name="Found"
+    )
     r = await client.get("/blogs/", params={"author_id": user.id})
     assert r.status_code == 200
     assert "text/html" in r.headers.get("content-type", "").lower()
@@ -809,8 +825,10 @@ async def test_login_user_view_exception_html(client, monkeypatch):
         },
     )
     from app.pages import views
+
     async def _boom(*args, **kwargs):
         raise RuntimeError("boom")
+
     monkeypatch.setattr(views, "authenticate_user", _boom)
     r = await client.post(
         "/auth/login/form",
@@ -877,6 +895,7 @@ async def test_profile_update_user_not_found(client, db_sessionmaker):
     await _register_and_login(client, email=email, phone=phone)
     from app.auth.dao import UsersDAO
     from app.auth.schemas import EmailModel
+
     async with db_sessionmaker() as session:
         user = await UsersDAO.find_one_or_none(
             session=session, filters=EmailModel(email=email)
@@ -922,7 +941,9 @@ async def test_profile_update_non_string_values(client):
 
 
 @pytest.mark.asyncio
-async def test_edit_blog_submit_admin_with_role_id_3(client, ensure_user, set_user_role):
+async def test_edit_blog_submit_admin_with_role_id_3(
+    client, ensure_user, set_user_role
+):
     email1 = f"author_admin3_{uuid.uuid4().hex[:8]}@example.com"
     phone1 = f"+7{uuid.uuid4().int % 10**10:010d}"
     await _register_and_login(client, email=email1, phone=phone1)
@@ -956,7 +977,9 @@ async def test_edit_blog_submit_admin_with_role_id_3(client, ensure_user, set_us
 
 
 @pytest.mark.asyncio
-async def test_edit_blog_submit_admin_with_role_id_4(client, ensure_user, set_user_role):
+async def test_edit_blog_submit_admin_with_role_id_4(
+    client, ensure_user, set_user_role
+):
     email1 = f"author_admin4_{uuid.uuid4().hex[:8]}@example.com"
     phone1 = f"+7{uuid.uuid4().int % 10**10:010d}"
     await _register_and_login(client, email=email1, phone=phone1)
@@ -1081,4 +1104,3 @@ async def test_blog_details_admin_role_id_4(client, ensure_user, set_user_role):
     await set_user_role(user.id, 4)
     r = await client.get(f"/blogs/{blog_id}/")
     assert r.status_code == 200
-
