@@ -9,8 +9,6 @@ from app.dao.database import Base, str_uniq
 
 # Промежуточная таблица для связи Many-to-Many
 class BlogTag(Base):
-    # Base.__tablename__ объявлен через @declared_attr, mypy трактует его как Callable[..., str].
-    # Для таблицы-связки задаём явное имя и игнорируем типовую несовместимость (на рантайм не влияет).
     __tablename__: ClassVar[str] = "blog_tags"  # type: ignore[assignment]
 
     blog_id: Mapped[int] = mapped_column(

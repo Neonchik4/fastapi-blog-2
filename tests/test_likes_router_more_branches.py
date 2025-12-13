@@ -24,7 +24,6 @@ async def test_toggle_like_existing_like_toggle_off(client, likes_file):
         "/auth/login/", json={"email": email, "password": "secret123"}
     )
     assert login_r.status_code == 200
-    # Проверяем, что cookie установлен
     assert "users_access_token" in login_r.cookies
 
     me_r = await client.get("/auth/me/")
@@ -38,7 +37,6 @@ async def test_toggle_like_existing_like_toggle_off(client, likes_file):
     assert r.status_code == 200
     assert r.json()["liked"] is True
 
-    # Переключаем на False (должен удалить запись)
     r = await client.post(
         "/api/likes/toggle", json={"post_id": post_id, "liked": False}
     )
@@ -57,7 +55,6 @@ async def test_toggle_like_existing_like_toggle_on(client, likes_file, ensure_us
     email = f"toggle_on_{uuid.uuid4().hex[:8]}@example.com"
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
 
-    # Используем ensure_user для гарантированного создания пользователя
     await ensure_user(
         email=email,
         password="secret123",
@@ -70,21 +67,18 @@ async def test_toggle_like_existing_like_toggle_on(client, likes_file, ensure_us
         "/auth/login/", json={"email": email, "password": "secret123"}
     )
     assert login_r.status_code == 200
-    # Проверяем, что cookie установлен
     assert "users_access_token" in login_r.cookies
 
     me_r = await client.get("/auth/me/")
     assert me_r.status_code == 200
     post_id = 456
 
-    # Создаём лайк с liked=False (не создаётся)
     r = await client.post(
         "/api/likes/toggle", json={"post_id": post_id, "liked": False}
     )
     assert r.status_code == 200
     assert r.json()["liked"] is False
 
-    # Теперь создаём с liked=True
     r = await client.post("/api/likes/toggle", json={"post_id": post_id, "liked": True})
     assert r.status_code == 200
     assert r.json()["liked"] is True
@@ -92,7 +86,6 @@ async def test_toggle_like_existing_like_toggle_on(client, likes_file, ensure_us
     # Переключаем существующий лайк
     r = await client.post("/api/likes/toggle", json={"post_id": post_id, "liked": True})
     assert r.status_code == 200
-    # После переключения liked становится False и запись удаляется
     assert r.json()["liked"] is False
 
 
@@ -117,7 +110,6 @@ async def test_get_user_likes_filters_by_liked_true(client, likes_file):
         "/auth/login/", json={"email": email, "password": "secret123"}
     )
     assert login_r.status_code == 200
-    # Проверяем, что cookie установлен
     assert "users_access_token" in login_r.cookies
 
     me_r = await client.get("/auth/me/")
@@ -215,7 +207,6 @@ async def test_is_post_liked_by_user_returns_false_when_not_liked(client, likes_
         "/auth/login/", json={"email": email, "password": "secret123"}
     )
     assert login_r.status_code == 200
-    # Проверяем, что cookie установлен
     assert "users_access_token" in login_r.cookies
 
     me_r = await client.get("/auth/me/")
@@ -238,7 +229,6 @@ async def test_is_post_liked_by_user_returns_true_when_liked(
     email = f"is_liked_{uuid.uuid4().hex[:8]}@example.com"
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
 
-    # Используем ensure_user для гарантированного создания пользователя
     await ensure_user(
         email=email,
         password="secret123",
@@ -251,7 +241,6 @@ async def test_is_post_liked_by_user_returns_true_when_liked(
         "/auth/login/", json={"email": email, "password": "secret123"}
     )
     assert login_r.status_code == 200
-    # Проверяем, что cookie установлен
     assert "users_access_token" in login_r.cookies
 
     me_r = await client.get("/auth/me/")

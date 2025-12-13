@@ -39,7 +39,6 @@ def test_write_likes_open_failure_raises_http_500(tmp_path, monkeypatch):
 
 @pytest.mark.asyncio
 async def test_toggle_like_liked_false_does_not_create_record(client, likes_file):
-    # register + login (reuse minimal flow)
     await client.post(
         "/auth/register/",
         json={
@@ -64,7 +63,6 @@ async def test_toggle_like_liked_false_does_not_create_record(client, likes_file
     assert r.status_code == 200
     assert r.json() == {"user_id": user_id, "post_id": 77, "liked": False}
 
-    # file should remain empty list
     assert likes_file.read_text(encoding="utf-8").strip().startswith("[")
 
 
@@ -74,7 +72,6 @@ async def test_toggle_like_write_failure_returns_500(client, monkeypatch):
 
     import app.api.likes_router as likes_router
 
-    # auth
     await client.post(
         "/auth/register/",
         json={
@@ -92,7 +89,6 @@ async def test_toggle_like_write_failure_returns_500(client, monkeypatch):
     )
     assert r.status_code == 200
 
-    # write_likes - синхронная функция, не async
     def _boom(*args, **kwargs):
         raise HTTPException(status_code=500, detail="Failed to save like")
 

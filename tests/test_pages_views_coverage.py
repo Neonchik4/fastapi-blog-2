@@ -166,18 +166,15 @@ async def test_edit_blog_submit_validation_error_blog_not_found(client):
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
     await _register_and_login(client, email=email, phone=phone)
 
-    # Пытаемся отредактировать несуществующий блог с невалидными данными
-    # Сначала будет ValidationError, затем проверка на существование блога
     r = await client.post(
         "/blogs/999999/edit/",
         data={
-            "title": "",  # Пустой title вызовет ValidationError
+            "title": "",
             "content": "Content",
             "short_description": "Short",
             "tags": "",
         },
     )
-    # Может быть 400 (ValidationError) или 404 (блог не найден)
     assert r.status_code in (400, 404)
 
 

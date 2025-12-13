@@ -6,9 +6,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_stats_page_requires_auth(client):
     """Тест: GET /stats/ требует авторизации"""
-    # get_current_user выбрасывает HTTPException при отсутствии токена
     r = await client.get("/stats/", follow_redirects=False)
-    # Может быть 401 (HTTPException) или редирект
     assert r.status_code in (401, 302, 303)
 
 
@@ -34,7 +32,6 @@ async def test_stats_page_renders_html(client):
     r = await client.get("/stats/")
     assert r.status_code == 200
     assert "text/html" in r.headers.get("content-type", "").lower()
-    # Проверяем наличие ключевых элементов статистики в HTML
     text = r.text
     assert "Статистика" in text or "статистика" in text or "users_total" in text
 

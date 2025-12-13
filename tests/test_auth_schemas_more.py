@@ -51,15 +51,12 @@ def test_suser_update_phone_none_allowed():
     """Тест: SUserUpdate phone_number может быть None"""
     from app.auth.schemas import SUserUpdate
 
-    # None разрешён
     upd = SUserUpdate(phone_number=None)
     assert upd.phone_number is None
 
-    # Валидный номер
     upd2 = SUserUpdate(phone_number="+70000000001")
     assert upd2.phone_number == "+70000000001"
 
-    # Невалидный номер
     with pytest.raises(ValidationError):
         SUserUpdate(phone_number="invalid")
 
@@ -68,11 +65,9 @@ def test_suser_update_password_without_confirm():
     """Тест: SUserUpdate password без confirm_password -> не хешируется"""
     from app.auth.schemas import SUserUpdate
 
-    # Если password задан, но confirm_password не задан -> ошибка валидации
     with pytest.raises(ValidationError):
         SUserUpdate(password="secret123")
 
-    # Если password не задан -> всё ок
     upd = SUserUpdate()
     assert upd.password is None
 
@@ -82,10 +77,10 @@ def test_suser_update_password_hash_when_provided():
     from app.auth.schemas import SUserUpdate
 
     upd = SUserUpdate(password="secret123", confirm_password="secret123")
-    assert upd.password != "secret123"  # Должен быть захеширован
+    assert upd.password != "secret123"
     assert upd.password.startswith("$2b$") or upd.password.startswith(
         "$2a$"
-    )  # bcrypt hash
+    )
 
 
 def test_suser_info_computed_fields():
@@ -141,7 +136,7 @@ def test_suser_register_password_hash():
         password="secret123",
         confirm_password="secret123",
     )
-    assert user.password != "secret123"  # Должен быть захеширован
+    assert user.password != "secret123"
     assert user.password.startswith("$2b$") or user.password.startswith(
         "$2a$"
-    )  # bcrypt hash
+    )

@@ -54,10 +54,10 @@ def test_auth_schemas_phone_and_password_validation():
     from app.auth.schemas import PhoneModel, SUserRegister, SUserUpdate
 
     with pytest.raises(ValidationError):
-        PhoneModel(phone_number="7000")  # no plus
+        PhoneModel(phone_number="7000")
 
     with pytest.raises(ValidationError):
-        PhoneModel(phone_number="+12")  # too short
+        PhoneModel(phone_number="+12")
 
     with pytest.raises(ValidationError):
         SUserRegister(
@@ -77,7 +77,7 @@ def test_auth_schemas_phone_and_password_validation():
         password="secret123",
         confirm_password="secret123",
     )
-    assert ok.password != "secret123"  # hashed
+    assert ok.password != "secret123"
 
     with pytest.raises(ValidationError):
         SUserUpdate(password="secret123", confirm_password="x")

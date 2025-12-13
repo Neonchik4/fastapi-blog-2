@@ -23,10 +23,10 @@ templates = Jinja2Templates(directory="app/templates")
 # Добавляем middleware для CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Разрешаем все источники
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],  # Разрешаем все методы
-    allow_headers=["*"],  # Разрешаем все заголовки
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
@@ -39,14 +39,12 @@ app.include_router(router_stats)
 
 
 def _is_api_like_path(path: str) -> bool:
-    # API и документация
     if (
         path.startswith("/api")
         or path.startswith("/docs")
         or path.startswith("/openapi")
     ):
         return True
-    # /auth/ — страница (templates), но остальные /auth/* — JSON API в тестах и приложении
     if path.startswith("/auth/") and path != "/auth/":
         return True
     return False
@@ -55,12 +53,10 @@ def _is_api_like_path(path: str) -> bool:
 def _wants_html(request: Request) -> bool:
     accept = (request.headers.get("accept") or "").lower()
     content_type = (request.headers.get("content-type") or "").lower()
-    # Если клиент явно работает с JSON — не подменяем ответ HTML-страницей
     if "application/json" in accept or "application/json" in content_type:
         return False
     if "text/html" in accept:
         return True
-    # Браузеры иногда присылают */*
     if accept.strip() == "" or "*/*" in accept:
         return True
     return False
@@ -103,7 +99,6 @@ async def _get_current_user_optional_from_request(request: Request):
 
 @app.exception_handler(StarletteHTTPException)
 async def http_exception_handler(request: Request, exc: StarletteHTTPException):
-    # Для API/доков не меняем формат ошибок — оставляем JSON как обычно
     if _is_api_like_path(request.url.path) or not _wants_html(request):
         return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
 

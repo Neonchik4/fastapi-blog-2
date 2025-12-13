@@ -47,7 +47,6 @@ async def test_register_login_me_logout_flow(client, test_log):
     r = await client.get("/auth/logout/", follow_redirects=False)
     assert r.status_code == 303
 
-    # cookie deleted => me must fail
     r = await client.get("/auth/me/")
     assert r.status_code == 401
 

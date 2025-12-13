@@ -70,7 +70,6 @@ async def test_blogdao_get_blog_list_filters_search_tag_and_paginates(
     )
 
     async with db_sessionmaker() as session:
-        # Данные: 2 published + 1 draft
         b1 = await _create_blog(
             session,
             author_id=u1.id,
@@ -87,7 +86,6 @@ async def test_blogdao_get_blog_list_filters_search_tag_and_paginates(
             session, author_id=u1.id, title=f"D_{uuid.uuid4().hex[:6]}", status="draft"
         )
 
-        # Теги + связи (и для b1 — два тега, чтобы покрыть дедупликацию)
         tag_ids = await TagDAO.add_tags(
             session=session, tag_names=["fastapi", "python"]
         )
@@ -102,25 +100,20 @@ async def test_blogdao_get_blog_list_filters_search_tag_and_paginates(
         await session.commit()
 
     async with db_sessionmaker() as session:
-        # Clamp page/page_size + published-only
         r = await BlogDAO.get_blog_list(session=session, page=0, page_size=1)
         assert r["page"] == 1
         assert r["total_result"] >= 2
         assert all(b.status == "published" for b in r["blogs"])
 
-        # author filter
         r2 = await BlogDAO.get_blog_list(session=session, author_id=u1.id)
         assert r2["total_result"] >= 2
 
-        # search (title)
         r3 = await BlogDAO.get_blog_list(session=session, search=b2.title)
         assert any(b.title == b2.title for b in r3["blogs"])
 
-        # search (author name path через User.has)
         r4 = await BlogDAO.get_blog_list(session=session, search="Alice")
         assert any(b.title in {b1.title, b2.title} for b in r4["blogs"])
 
-        # tag filter (ветка join + any + дедупликация)
         r5 = await BlogDAO.get_blog_list(session=session, tag="fastapi")
         ids = [b.id for b in r5["blogs"]]
         assert len(ids) == len(set(ids))
@@ -392,7 +385,6 @@ async def test_blogtagdao_add_blog_tags_handles_invalid_pairs_and_flush_error(
         )
         tag_ids = await TagDAO.add_tags(session=session, tag_names=["t1"])
 
-        # invalid pairs => ветка warning + "else: no valid data"
         await BlogTagDAO.add_blog_tags(
             session=session, blog_tag_pairs=[{"blog_id": None, "tag_id": None}]
         )

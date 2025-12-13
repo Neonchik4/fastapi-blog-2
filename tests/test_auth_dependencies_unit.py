@@ -50,27 +50,23 @@ async def test_get_current_user_and_optional_branches(db_sessionmaker, ensure_us
         last_name="User",
     )
 
-    # invalid jwt
     async with db_sessionmaker() as session:
         with pytest.raises(HTTPException) as e:
             await get_current_user(token="not-a-jwt", session=session)
         assert e.value.status_code == 401
 
-    # expired token => TokenExpiredException
     expired = _encode({"sub": str(u.id), "exp": int(time.time()) - 10})
     async with db_sessionmaker() as session:
         with pytest.raises(HTTPException) as e:
             await get_current_user(token=expired, session=session)
         assert e.value.status_code == 401
 
-    # missing sub => NoUserIdException
     no_sub = _encode({"exp": int(time.time()) + 60})
     async with db_sessionmaker() as session:
         with pytest.raises(HTTPException) as e:
             await get_current_user(token=no_sub, session=session)
         assert e.value.status_code == 401
 
-    # user not found => 401 "User not found"
     missing_user = _encode({"sub": "999999", "exp": int(time.time()) + 60})
     async with db_sessionmaker() as session:
         with pytest.raises(HTTPException) as e:
@@ -78,25 +74,20 @@ async def test_get_current_user_and_optional_branches(db_sessionmaker, ensure_us
         assert e.value.status_code == 401
         assert e.value.detail == "User not found"
 
-    # ok
     ok = _encode({"sub": str(u.id), "exp": int(time.time()) + 60})
     async with db_sessionmaker() as session:
         got = await get_current_user(token=ok, session=session)
     assert got.id == u.id
 
-    # optional: no token => None
     async with db_sessionmaker() as session:
         assert await get_current_user_optional(token=None, session=session) is None
 
-    # optional: invalid token => None
     async with db_sessionmaker() as session:
         assert await get_current_user_optional(token="bad", session=session) is None
 
-    # optional: expired => None
     async with db_sessionmaker() as session:
         assert await get_current_user_optional(token=expired, session=session) is None
 
-    # optional: ok => user
     async with db_sessionmaker() as session:
         got = await get_current_user_optional(token=ok, session=session)
     assert got is not None and got.id == u.id
@@ -120,7 +111,6 @@ async def test_get_current_admin_user_and_get_blog_info(monkeypatch):
         calls["blog_id"] = blog_id
         calls["author_id"] = author_id
         calls["user_role_id"] = user_role_id
-        # Возвращаем dict, который будет преобразован в BlogNotFind
         return {"message": "Test", "status": "error"}
 
     from app.api import dao as api_dao
@@ -130,7 +120,6 @@ async def test_get_current_admin_user_and_get_blog_info(monkeypatch):
 
     anon = None
     out = await get_blog_info(blog_id=10, session=None, user_data=anon)
-    # get_blog_info преобразует dict в BlogNotFind
     assert isinstance(out, BlogNotFind)
     assert out.message == "Test"
     assert out.status == "error"

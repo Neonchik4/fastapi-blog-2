@@ -36,7 +36,6 @@ async def test_base_dao_crud_find_count_paginate_upsert_bulk_update(db_sessionma
         model = Tag
 
     async with db_sessionmaker() as session:
-        # add + find_one_or_none_by_id
         t1 = await TagDAO.add(
             session=session, values=_TagAdd(name=f"t_{uuid.uuid4().hex[:6]}")
         )
@@ -49,7 +48,6 @@ async def test_base_dao_crud_find_count_paginate_upsert_bulk_update(db_sessionma
         missing = await TagDAO.find_one_or_none_by_id(data_id=999999, session=session)
         assert missing is None
 
-        # find_one_or_none + find_all
         by_name = await TagDAO.find_one_or_none(
             session=session, filters=_TagFilter(name=t1.name)
         )
@@ -57,7 +55,6 @@ async def test_base_dao_crud_find_count_paginate_upsert_bulk_update(db_sessionma
         all_tags = await TagDAO.find_all(session=session, filters=None)
         assert any(t.id == t1.id for t in all_tags)
 
-        # add_many
         new_tags = await TagDAO.add_many(
             session=session,
             instances=[
@@ -69,17 +66,14 @@ async def test_base_dao_crud_find_count_paginate_upsert_bulk_update(db_sessionma
         await session.commit()
 
     async with db_sessionmaker() as session:
-        # count
         c = await TagDAO.count(session=session, filters=_TagFilter(name=t1.name))
         assert c == 1
 
-        # paginate
         page1 = await TagDAO.paginate(
             session=session, page=1, page_size=2, filters=None
         )
         assert len(page1) <= 2
 
-        # update
         updated = await TagDAO.update(
             session=session,
             filters=_TagFilter(id=t1.id),
@@ -89,12 +83,10 @@ async def test_base_dao_crud_find_count_paginate_upsert_bulk_update(db_sessionma
         await session.commit()
 
     async with db_sessionmaker() as session:
-        # find_by_ids
         ids = [t1.id]
         found = await TagDAO.find_by_ids(session=session, ids=ids)
         assert len(found) == 1 and found[0].id == t1.id
 
-        # upsert create + upsert update
         created = await TagDAO.upsert(
             session=session,
             unique_fields=["name"],
@@ -110,7 +102,6 @@ async def test_base_dao_crud_find_count_paginate_upsert_bulk_update(db_sessionma
         await session.commit()
 
     async with db_sessionmaker() as session:
-        # bulk_update: одна запись без id => пропуск веткой continue
         existing = await TagDAO.find_one_or_none(
             session=session, filters=_TagFilter(id=t1.id)
         )
@@ -126,7 +117,6 @@ async def test_base_dao_crud_find_count_paginate_upsert_bulk_update(db_sessionma
         await session.commit()
 
     async with db_sessionmaker() as session:
-        # delete: success
         to_delete = await TagDAO.add(
             session=session, values=_TagAdd(name=f"del_{uuid.uuid4().hex[:6]}")
         )

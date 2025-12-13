@@ -61,38 +61,30 @@ async def test_get_current_user_optional_from_request_branches(
     import app.main as main
     from app.auth.dao import UsersDAO
 
-    # важно: используем тестовую БД, а не "боевую" async_session_maker из app.dao.database
     monkeypatch.setattr(main, "async_session_maker", db_sessionmaker)
 
-    # no cookie
     req = _make_request()
     assert await main._get_current_user_optional_from_request(req) is None
 
-    # invalid jwt
     req = _make_request(headers={"cookie": "users_access_token=not-a-jwt"})
     assert await main._get_current_user_optional_from_request(req) is None
 
-    # missing exp
     token = _encode_token({"sub": "1"})
     req = _make_request(headers={"cookie": f"users_access_token={token}"})
     assert await main._get_current_user_optional_from_request(req) is None
 
-    # non-int exp
     token = _encode_token({"sub": "1", "exp": "nope"})
     req = _make_request(headers={"cookie": f"users_access_token={token}"})
     assert await main._get_current_user_optional_from_request(req) is None
 
-    # expired exp
     token = _encode_token({"sub": "1", "exp": int(time.time()) - 5})
     req = _make_request(headers={"cookie": f"users_access_token={token}"})
     assert await main._get_current_user_optional_from_request(req) is None
 
-    # missing sub
     token = _encode_token({"exp": int(time.time()) + 60})
     req = _make_request(headers={"cookie": f"users_access_token={token}"})
     assert await main._get_current_user_optional_from_request(req) is None
 
-    # user exists
     u = await ensure_user(
         "main_user@example.com",
         password="secret123",
@@ -105,7 +97,6 @@ async def test_get_current_user_optional_from_request_branches(
     got = await main._get_current_user_optional_from_request(req)
     assert got is not None and got.id == u.id
 
-    # UsersDAO fails => function must swallow and return None
     async def _boom(*args, **kwargs):
         raise RuntimeError("db down")
 

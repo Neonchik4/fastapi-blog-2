@@ -9,7 +9,6 @@ class _FakeSession:
         self.executed_sql: list[str] = []
 
     async def execute(self, stmt):
-        # `stmt` может быть sqlalchemy.text(...)
         self.executed_sql.append(str(stmt))
         return None
 
@@ -31,7 +30,6 @@ class _FakeSessionCtx:
         return self._session
 
     async def __aexit__(self, exc_type, exc, tb):
-        # В реальной SQLAlchemy сессия закрывается тут; в коде менеджера есть свой finally close().
         return False
 
 

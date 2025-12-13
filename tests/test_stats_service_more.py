@@ -128,13 +128,13 @@ async def test_compute_stats_likes_filter_invalid_types(
                     "user_id": "not_int",
                     "post_id": blog_id,
                     "liked": True,
-                },  # user_id не int
+                },
                 {
                     "user_id": u.id,
                     "post_id": "not_int",
                     "liked": True,
-                },  # post_id не int
-                {"user_id": u.id, "post_id": blog_id, "liked": False},  # liked=False
+                },
+                {"user_id": u.id, "post_id": blog_id, "liked": False},
                 {"user_id": u.id, "post_id": blog_id, "liked": True},  # валидный
             ]
         ),
@@ -210,7 +210,6 @@ async def test_compute_stats_top_posts_empty_list_skips_query(
         phone="+70000000024",
     )
 
-    # Нет лайков -> top_post_ids будет пустым
     likes_json_file.write_text("[]", encoding="utf-8")
 
     async with db_sessionmaker() as session:

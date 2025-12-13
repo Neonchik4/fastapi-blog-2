@@ -10,7 +10,6 @@ async def test_blog_crud_and_visibility_rules(app, client, test_log):
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
     password = "secret123"
 
-    # register + login
     await client.post(
         "/auth/register/",
         json={
@@ -71,7 +70,6 @@ async def test_blog_crud_and_visibility_rules(app, client, test_log):
     test_log("draft is visible for author")
     r = await client.get(f"/api/get_blog/{blog_id}")
     assert r.status_code == 200
-    # Важно: тестируем по фактическому ответу (в проекте возвращается либо dict, либо сериализованный ORM)
     body = r.json()
     assert (
         body.get("id") == blog_id

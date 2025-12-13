@@ -62,8 +62,6 @@ async def test_http_exception_handler_404_html_with_user(
         phone=phone,
     )
 
-    # Мокаем async_session_maker для получения пользователя
-
     async def _mock_session_maker():
         from app.auth.dao import UsersDAO
         from app.dao.session_maker import SessionDep
@@ -73,10 +71,8 @@ async def test_http_exception_handler_404_html_with_user(
                 data_id=user.id, session=session
             )
 
-    # Создаём токен
     token = _encode_token({"sub": str(user.id), "exp": int(time.time()) + 60})
 
-    # Запрос с cookie
     r = await client.get(
         "/non-existent-page",
         headers={"accept": "text/html", "cookie": f"users_access_token={token}"},
@@ -94,11 +90,9 @@ async def test_get_current_user_optional_from_request_exception_on_int_conversio
 
     monkeypatch.setattr(main, "async_session_maker", db_sessionmaker)
 
-    # Токен с невалидным sub (не число)
     token = _encode_token({"sub": "not-a-number", "exp": int(time.time()) + 60})
     req = _make_request(headers={"cookie": f"users_access_token={token}"})
 
-    # Должен вернуть None из-за ошибки преобразования int(user_id)
     result = await main._get_current_user_optional_from_request(req)
     assert result is None
 
@@ -112,12 +106,8 @@ async def test_get_current_user_optional_from_request_exception_on_timestamp_con
 
     monkeypatch.setattr(main, "async_session_maker", db_sessionmaker)
 
-    # Токен с невалидным exp (не число, но присутствует)
-    # JWT библиотека может выбросить исключение при декодировании
-    # или мы получим None при попытке преобразования
     token = _encode_token({"sub": "1", "exp": "invalid"})
     req = _make_request(headers={"cookie": f"users_access_token={token}"})
 
-    # Должен вернуть None из-за ошибки преобразования timestamp
     result = await main._get_current_user_optional_from_request(req)
     assert result is None

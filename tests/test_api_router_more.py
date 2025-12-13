@@ -22,7 +22,6 @@ async def test_get_blogs_returns_500_on_unhandled_exception(client, monkeypatch)
 
 @pytest.mark.asyncio
 async def test_add_post_without_tags_field_is_ok(client):
-    # register + login
     await client.post(
         "/auth/register/",
         json={
@@ -40,7 +39,6 @@ async def test_add_post_without_tags_field_is_ok(client):
     )
     assert r.status_code == 200
 
-    # tags omitted entirely (Pydantic default/optional path)
     r = await client.post(
         "/api/add_post/",
         json={
@@ -58,7 +56,6 @@ async def test_add_post_without_tags_field_is_ok(client):
 async def test_delete_and_change_blog_status_user_role_none_path(
     app, client, monkeypatch
 ):
-    # Force get_current_user to return object with role=None
     from app.api import dao as api_dao
     from app.auth.dependencies import get_current_user
 
@@ -89,5 +86,4 @@ async def test_delete_and_change_blog_status_user_role_none_path(
         assert r.status_code == 200
         assert r.json()["status"] == "success"
     finally:
-        # Очищаем override, чтобы не влиять на другие тесты
         app.dependency_overrides.pop(get_current_user, None)

@@ -6,9 +6,7 @@ import pytest
 @pytest.mark.asyncio
 async def test_create_blog_page_requires_auth(client):
     """Тест: GET /blogs/create/ требует авторизации"""
-    # get_current_user выбрасывает HTTPException при отсутствии токена
     r = await client.get("/blogs/create/", follow_redirects=False)
-    # Может быть 401 (HTTPException) или редирект
     assert r.status_code in (401, 302, 303)
 
 
@@ -55,24 +53,15 @@ async def test_create_blog_submit_validation_error_returns_400(client):
     )
     await client.post("/auth/login/", json={"email": email, "password": "secret123"})
 
-    # Отсутствие обязательного поля content должно вызвать ValidationError
-    # Но если форма отправляет пустую строку для content, то (form.get("content") or "").strip() = ""
-    # Pydantic принимает пустую строку для str, поэтому ValidationError не будет
-    # Проверяем реальное поведение - если форма принимает пустое content, то это редирект
-    # Но по логике, пустое content должно быть ошибкой, поэтому проверяем через другой способ
-    # Используем очень длинный title, который может вызвать ошибку валидации
-    # Или проверяем, что форма действительно требует content
-    # В реальности форма может принимать пустые значения, поэтому проверяем реальное поведение
     r = await client.post(
         "/blogs/create/",
         data={
             "title": "Test Title",
-            "content": "",  # Пустое content - Pydantic может принять
+            "content": "",
             "short_description": "Short",
             "tags": "",
         },
     )
-    # Если форма принимает пустое content, то это редирект (303), иначе ошибка (400)
     assert r.status_code in (400, 303)
     if r.status_code == 400:
         assert "Ошибка валидации" in r.text or "content" in r.text.lower()
@@ -185,17 +174,15 @@ async def test_edit_blog_submit_validation_error_returns_400(client):
     )
     blog_id = int(r.headers["location"].strip("/").split("/")[1])
 
-    # Пытаемся отредактировать с пустым content (должен вызвать ошибку или принять)
     r = await client.post(
         f"/blogs/{blog_id}/edit/",
         data={
             "title": "New Title",
-            "content": "",  # Пустое content - Pydantic может принять
+            "content": "",
             "short_description": "Short",
             "tags": "",
         },
     )
-    # Если форма принимает пустое content, то это редирект (303), иначе ошибка (400)
     assert r.status_code in (400, 303)
     if r.status_code == 400:
         assert "Ошибка валидации" in r.text or "content" in r.text.lower()
@@ -250,8 +237,6 @@ async def test_edit_blog_submit_empty_tags_clears_tags(client):
 @pytest.mark.asyncio
 async def test_blog_details_not_found_returns_404(client):
     """Тест: GET /blogs/{id}/ для несуществующего блога -> 404"""
-    # get_blog_info возвращает BlogNotFind (dict) для несуществующего блога
-    # blog_details проверяет isinstance(blog_info, dict) и возвращает 404
     r = await client.get("/blogs/999999/")
     assert r.status_code == 404
     assert "text/html" in r.headers.get("content-type", "").lower()
@@ -263,14 +248,12 @@ async def test_auth_page_with_message_and_mode(client):
     r = await client.get("/auth/?mode=register&message=Test%20message")
     assert r.status_code == 200
     assert "text/html" in r.headers.get("content-type", "").lower()
-    # Проверяем, что сообщение присутствует в HTML
     assert "Test message" in r.text or "message" in r.text.lower()
 
 
 @pytest.mark.asyncio
 async def test_register_user_view_html_error_returns_template(client):
     """Тест: POST /auth/register/form без AJAX -> HTML с ошибкой"""
-    # Пытаемся зарегистрировать с невалидными данными (без AJAX заголовка)
     r = await client.post(
         "/auth/register/form",
         data={
@@ -342,7 +325,6 @@ async def test_login_user_view_html_wrong_password_returns_template(client):
         },
     )
 
-    # Пытаемся войти с неверным паролем (без AJAX)
     r = await client.post(
         "/auth/login/form",
         data={"email": email, "password": "wrong"},
@@ -440,7 +422,6 @@ async def test_profile_update_duplicate_phone_returns_400(client):
         },
     )
 
-    # Логинимся как второй пользователь и пытаемся использовать телефон первого
     await client.post("/auth/login/", json={"email": email2, "password": "secret123"})
     r = await client.post(
         "/profile/",
@@ -482,14 +463,10 @@ async def test_profile_update_user_not_found_returns_404(client, db_sessionmaker
             await session.delete(user)
             await session.commit()
 
-        # Пытаемся обновить профиль
-        # После удаления пользователя токен становится невалидным,
-        # и get_current_user выбрасывает 401 раньше, чем проверяется наличие пользователя
         r = await client.post(
             "/profile/",
             data={"first_name": "NewName"},
         )
-        # Может быть 401 (токен невалидный) или 404 (пользователь не найден)
         assert r.status_code in (401, 404)
     assert "не найден" in r.text.lower() or "not found" in r.text.lower()
 
@@ -537,13 +514,11 @@ async def test_blog_details_is_admin_true_for_admin(
             session=session, filters=EmailModel(email=email)
         )
         if user:
-            await set_user_role(user.id, 3)  # Admin
+            await set_user_role(user.id, 3)
 
-    # Просматриваем блог
+    r = await client.get(f"/blogs/{blog_id}/")
     r = await client.get(f"/blogs/{blog_id}/")
     assert r.status_code == 200
-    # Проверяем, что is_admin передаётся в контекст (косвенно через HTML)
-    # В реальном приложении можно проверить наличие админских элементов
 
 
 @pytest.mark.asyncio
@@ -566,7 +541,6 @@ async def test_register_user_view_integrity_error_returns_400(client):
         headers={"x-requested-with": "XMLHttpRequest"},
     )
 
-    # Пытаемся зарегистрировать второй раз (гонка/IntegrityError)
     r = await client.post(
         "/auth/register/form",
         data={
@@ -578,7 +552,6 @@ async def test_register_user_view_integrity_error_returns_400(client):
             "confirm_password": "secret123",
         },
     )
-    # Может быть 400 или 409 в зависимости от того, как обрабатывается IntegrityError
     assert r.status_code in (400, 409)
 
 
@@ -600,7 +573,6 @@ async def test_register_user_view_success_redirects(client):
         },
         follow_redirects=False,
     )
-    # Может быть 303 редирект или 201 для AJAX
     assert r.status_code in (201, 303)
 
 
