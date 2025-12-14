@@ -1,1 +1,67 @@
-[]
+[
+  {
+    "user_id": 6,
+    "post_id": 5,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 2,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 7,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 8,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 14,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 6,
+    "liked": true
+  },
+  {
+    "user_id": 16,
+    "post_id": 2,
+    "liked": true
+  },
+  {
+    "user_id": 16,
+    "post_id": 5,
+    "liked": true
+  },
+  {
+    "user_id": 16,
+    "post_id": 6,
+    "liked": true
+  },
+  {
+    "user_id": 16,
+    "post_id": 7,
+    "liked": true
+  },
+  {
+    "user_id": 16,
+    "post_id": 8,
+    "liked": true
+  },
+  {
+    "user_id": 16,
+    "post_id": 16,
+    "liked": true
+  },
+  {
+    "user_id": 16,
+    "post_id": 17,
+    "liked": true
+  }
+]

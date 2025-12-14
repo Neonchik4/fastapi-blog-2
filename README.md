@@ -92,7 +92,13 @@
 
 5. Запустите приложение:
    ```bash
-   uvicorn app.main:app --reload
+   uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+   ```
+   
+   **Важно:** Приложение будет доступно по адресу `http://127.0.0.1:8000` (не `localhost:8000`).
+   Если нужно, чтобы приложение было доступно по `localhost`, используйте:
+   ```bash
+   uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
    ```
 ## Тестирование проекта
 
