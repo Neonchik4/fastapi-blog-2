@@ -422,7 +422,7 @@ async def test_blogs_page_search_found(client):
     phone = f"+7{uuid.uuid4().int % 10**10:010d}"
     await _register_and_login(client, email=email, phone=phone)
     search_term = f"UniqueSearch_{uuid.uuid4().hex[:6]}"
-    r = await client.post(
+    create_response = await client.post(
         "/blogs/create/",
         data={
             "title": search_term,
@@ -432,6 +432,7 @@ async def test_blogs_page_search_found(client):
         },
         follow_redirects=False,
     )
+    assert create_response.status_code == 303
     r = await client.get("/blogs/", params={"search": search_term})
     assert r.status_code == 200
 
