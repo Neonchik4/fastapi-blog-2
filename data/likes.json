@@ -63,5 +63,15 @@
     "user_id": 16,
     "post_id": 17,
     "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 16,
+    "liked": true
+  },
+  {
+    "user_id": 6,
+    "post_id": 18,
+    "liked": true
   }
 ]
