@@ -6,9 +6,7 @@ from fastapi.templating import Jinja2Templates
 from app.api.likes_router import router as router_likes
 from app.api.router import router as router_api
 from app.auth.router import router as router_auth
-from app.handlers import (
-    register_exception_handlers,
-)
+from app.handlers import register_exception_handlers
 from app.pages.views import router as router_page
 from app.stats.router import router as router_stats
 
