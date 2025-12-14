@@ -8,7 +8,16 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.auth.dao import UsersDAO
 from app.config import settings
-from app.dao.database import async_session_maker
+from app.dao.database import async_session_maker as _default_async_session_maker
+
+
+def _get_async_session_maker():
+    import sys
+
+    main_module = sys.modules.get("app.main")
+    if main_module and hasattr(main_module, "async_session_maker"):
+        return main_module.async_session_maker
+    return _default_async_session_maker
 
 
 def _is_api_like_path(path: str) -> bool:
@@ -62,7 +71,8 @@ async def _get_current_user_optional_from_request(request: Request):
         return None
 
     try:
-        async with async_session_maker() as session:
+        session_maker = _get_async_session_maker()
+        async with session_maker() as session:
             return await UsersDAO.find_one_or_none_by_id(
                 data_id=int(user_id), session=session
             )
@@ -74,7 +84,9 @@ def register_exception_handlers(app: FastAPI, templates: Jinja2Templates):
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(request: Request, exc: StarletteHTTPException):
         if _is_api_like_path(request.url.path) or not _wants_html(request):
-            return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
+            return JSONResponse(
+                status_code=exc.status_code, content={"detail": exc.detail}
+            )
 
         if exc.status_code == 404:
             current_user = await _get_current_user_optional_from_request(request)
@@ -126,4 +138,3 @@ def register_exception_handlers(app: FastAPI, templates: Jinja2Templates):
             },
             status_code=500,
         )
-
