@@ -6,16 +6,11 @@ from fastapi.templating import Jinja2Templates
 from app.api.likes_router import router as router_likes
 from app.api.router import router as router_api
 from app.auth.router import router as router_auth
-from app.dao.database import async_session_maker
 from app.handlers import (
-    _get_current_user_optional_from_request,
-    _is_api_like_path,
-    _wants_html,
     register_exception_handlers,
 )
 from app.pages.views import router as router_page
 from app.stats.router import router as router_stats
-
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
