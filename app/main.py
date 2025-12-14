@@ -16,14 +16,6 @@ from app.handlers import (
 from app.pages.views import router as router_page
 from app.stats.router import router as router_stats
 
-# функции для тестов
-__all__ = [
-    "app",
-    "async_session_maker",
-    "_is_api_like_path",
-    "_wants_html",
-    "_get_current_user_optional_from_request",
-]
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
